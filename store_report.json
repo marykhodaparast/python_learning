@@ -1,0 +1,25 @@
+{
+  "customers_report": {
+    "number_of_customers": 5,
+    "total_purchases_amount": 6700,
+    "number_of_customers_with_purchases_at_least_1000": 3,
+    "customer_with_max_purchase": "John",
+    "avg_purchase": 1340.0
+  },
+  "inventory_report": {
+    "number_of_products": 5,
+    "total_value_of_store": 7300,
+    "product_count_of_stock_less_than_5": 2,
+    "max_value_product_name": "Laptop",
+    "avg_stock_per_product": 17.0
+  },
+  "transactions_report": {
+    "number_of_transactions": 6,
+    "number_of_successful_transactions": 4,
+    "number_of_failed_transactions": 1,
+    "total_amount_of_successful_transactions": 6400,
+    "max_successful_transaction": 2500,
+    "max_successful_transaction_user": "John",
+    "avg_of_successful_transactions": 1600.0
+  }
+}
