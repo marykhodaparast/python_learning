@@ -143,6 +143,11 @@ The API should return a `404 Not Found` response.
 - Pydantic models
 - Data validation using Field and Literal
 - Interactive API documentation with Swagger UI
+- Response Models
+- PUT and DELETE HTTP Methods
+- HTTP Status Codes (200, 201, 404, 204)
+- Partial Resource Updates
+- CRUD Operations
 
 ## Project Status
 
