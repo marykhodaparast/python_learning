@@ -37,6 +37,10 @@ For example, if the file is named `tamrin24.py` and contains a FastAPI instance 
 
 General command format:
 
+cd fastapi_project
+
+python3 -m uvicorn main:app --reload
+
 ```bash
 python3 -m uvicorn filename:app --reload
 ```

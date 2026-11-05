@@ -8,7 +8,7 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=list[ProductResponse], status_code=status.HTTP_200_OK)
+@router.get("", response_model=list[ProductResponse], status_code=status.HTTP_200_OK)
 async def get_products():
     return products
 
@@ -24,7 +24,7 @@ async def get_product(product_name: str):
     return product
 
 
-@router.post("/", response_model=ProductResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=ProductResponse, status_code=status.HTTP_201_CREATED)
 async def create_product(product: ProductCreate):
     if any(p["name"] == product.name for p in products):
         raise HTTPException(
@@ -36,7 +36,7 @@ async def create_product(product: ProductCreate):
     return new_product
 
 
-@router.put("/{product_name}", response_model=ProductResponse, status_code=status.HTTP_200_OK)
+@router.patch("/{product_name}", response_model=ProductResponse, status_code=status.HTTP_200_OK)
 async def update_product(product_name: str, product_update: ProductUpdate):
     product = next((p for p in products if p["name"] == product_name), None)
     if product is None:

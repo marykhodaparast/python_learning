@@ -3,7 +3,7 @@ from typing import Optional
 
 
 class ProductCreate(BaseModel):
-    name: str = Field(min_length=1, max_length=50, description="Product name")
+    name: str = Field(min_length=2, max_length=50, description="Product name")
     price: float = Field(gt=0, description="Price (must be positive)")
     stock: int = Field(ge=0, description="Stock (zero or positive)")
 
