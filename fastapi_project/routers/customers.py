@@ -1,10 +1,12 @@
-# routers/customers.py
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from schemas.customer import CustomerResponse
 from data import customers
 
 router = APIRouter(prefix="/customers", tags=["Customers"])
 
+def get_customer_storage():
+    return customers
+
 @router.get("/", response_model=list[CustomerResponse])
-async def get_customers(min_purchase: int = 0):
-    return [c for c in customers if c["purchases"] >= min_purchase]
+async def get_customers(min_purchase: int = 0,  storage = Depends(get_customer_storage)):
+    return [c for c in storage if c["purchases"] >= min_purchase]

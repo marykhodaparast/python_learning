@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from routers import products_router, customers_router, transactions_router
-
+from routers.external import router as external_router
 
 
 app = FastAPI(
@@ -14,6 +14,8 @@ app.include_router(products_router)
 app.include_router(customers_router)
 
 app.include_router(transactions_router)
+
+app.include_router(external_router)
 
 
 @app.get("/")
