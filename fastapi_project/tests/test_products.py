@@ -1,14 +1,14 @@
 import pytest
 from fastapi.testclient import TestClient
 from main import app
-import data
+import fastapi_project.database as database
 
 client = TestClient(app)
 
 @pytest.fixture(autouse=True)
 def reset_products():
-    data.products.clear()
-    data.products.extend([
+    database.products.clear()
+    database.products.extend([
         {"name": "Laptop", "price": 1200, "stock": 4},
         {"name": "Mouse", "price": 25, "stock": 20},
     ])
