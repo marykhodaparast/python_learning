@@ -1,45 +1,79 @@
 # Python & FastAPI Practice
 
-A collection of practical Python and FastAPI exercises covering data analysis, JSON handling, REST API development, and request validation.
+A collection of practical Python and FastAPI exercises covering data analysis, JSON handling, REST API development, request validation, and database integration.
 
-All exercises have been implemented and tested successfully.
+This repository is part of my practical learning journey toward Python backend development and AI Agent development.
 
 ## Requirements
 
-- Python 3
-- pip3
+- Python 3.10+
+- pip
 - FastAPI
 - Uvicorn
+- SQLAlchemy
 
 ## Installation
 
-Install FastAPI and Uvicorn:
+Clone the repository:
 
 ```bash
-pip3 install fastapi uvicorn
+git clone https://github.com/marykhodaparast/python_learning.git
+cd python_learning
 ```
 
-Alternatively, install them using a specific Python interpreter:
+Install the required dependencies:
 
 ```bash
-/usr/bin/python3 -m pip install fastapi uvicorn
+python3 -m pip install fastapi uvicorn sqlalchemy pydantic
 ```
 
-## Running the Application
-
-Run the desired Python exercise using Uvicorn.
-
-For example, if the file is named `tamrin24.py` and contains a FastAPI instance named `app`:
+Alternatively, use a specific Python interpreter:
 
 ```bash
-/usr/bin/python3 -m uvicorn tamrin24:app --reload
+/usr/bin/python3 -m pip install fastapi uvicorn sqlalchemy pydantic
+```
+
+## Running the FastAPI Application
+
+The main FastAPI application is located in the `fastapi_project` directory.
+
+First, navigate to the project directory:
+
+```bash
+cd fastapi_project
+```
+
+Start the development server:
+
+```bash
+python3 -m uvicorn main:app --reload
+```
+
+Alternatively, use a specific Python interpreter:
+
+```bash
+/usr/bin/python3 -m uvicorn main:app --reload
+```
+
+The `--reload` option automatically restarts the server whenever code changes are detected.
+
+Once the server starts, open:
+
+- API: http://127.0.0.1:8000
+- Interactive API documentation: http://127.0.0.1:8000/docs
+- Alternative API documentation: http://127.0.0.1:8000/redoc
+
+## Running Individual Exercises
+
+You can also run individual FastAPI exercises using Uvicorn.
+
+For example, if `tamrin24.py` contains a FastAPI instance named `app`:
+
+```bash
+python3 -m uvicorn tamrin24:app --reload
 ```
 
 General command format:
-
-cd fastapi_project
-
-python3 -m uvicorn main:app --reload
 
 ```bash
 python3 -m uvicorn filename:app --reload
@@ -47,25 +81,15 @@ python3 -m uvicorn filename:app --reload
 
 Replace `filename` with the Python file name without the `.py` extension.
 
-The `--reload` option automatically restarts the development server when code changes are detected.
-
-Once the server starts, it is available at:
-
-```text
-http://127.0.0.1:8000
-```
-
-## Interactive API Documentation
+## Testing API Endpoints
 
 FastAPI automatically generates interactive API documentation.
 
-Open the following URL in your browser:
+Open:
 
-[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+http://127.0.0.1:8000/docs
 
-You can use this page to explore endpoints and test API requests without installing additional tools.
-
-## Testing API Endpoints
+You can explore and test API endpoints directly through Swagger UI.
 
 ### 1. Testing a GET Request
 
@@ -82,16 +106,11 @@ Steps:
 3. Click **Try it out**.
 4. Enter a value for `min_purchase`, such as `1000`.
 5. Click **Execute**.
-6. Check the response returned by the API.
+6. Check the API response.
 
 ### 2. Testing a POST Request
 
 For example, to add a new transaction:
-
-1. Open [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
-2. Find the `POST /transactions` endpoint.
-3. Click **Try it out**.
-4. Enter the request body in JSON format:
 
 ```json
 {
@@ -101,16 +120,15 @@ For example, to add a new transaction:
 }
 ```
 
-5. Click **Execute**.
-6. Check the response body and HTTP status code.
-
-A successful request should return a confirmation message, the newly added transaction, and the updated transaction count.
+1. Find the `POST /transactions` endpoint.
+2. Click **Try it out**.
+3. Enter the JSON request body.
+4. Click **Execute**.
+5. Check the response body and HTTP status code.
 
 ### 3. Testing Validation
 
-The transaction endpoint also supports input validation through Pydantic.
-
-Try sending invalid data, for example:
+Try sending invalid data:
 
 ```json
 {
@@ -120,17 +138,28 @@ Try sending invalid data, for example:
 }
 ```
 
-FastAPI should reject the request and return a `422 Unprocessable Entity` response with validation details.
+FastAPI should reject invalid input and return a `422 Unprocessable Entity` response with validation details.
 
 ### 4. Testing a 404 Response
 
-To test the product endpoint, try requesting a product that does not exist:
+Try requesting a product that does not exist:
 
 ```text
 GET /products/UnknownProduct
 ```
 
 The API should return a `404 Not Found` response.
+
+## Database Integration
+
+The project includes SQLAlchemy integration with SQLite.
+
+- SQLAlchemy is used for database operations.
+- SQLite stores application data locally.
+- Database sessions are managed through a reusable dependency.
+- Product endpoints are being migrated from in-memory storage to database-backed operations.
+
+The database file is created automatically when the application starts.
 
 ## Concepts Practiced
 
@@ -140,23 +169,31 @@ The API should return a `404 Not Found` response.
 - JSON serialization and deserialization
 - Reading and writing JSON files
 - FastAPI application setup
-- GET and POST HTTP methods
-- Query Parameters
-- Path Parameters
+- GET, POST, PATCH, and DELETE methods
+- Query Parameters and Path Parameters
 - HTTPException and error handling
-- Pydantic models
-- Data validation using Field and Literal
-- Interactive API documentation with Swagger UI
+- Pydantic models and data validation
+- Field constraints and Literal types
 - Response Models
-- PUT and DELETE HTTP Methods
-- HTTP Status Codes (200, 201, 404, 204)
-- Partial Resource Updates
-- CRUD Operations
+- Dependency Injection
+- SQLAlchemy ORM
+- SQLite database integration
+- Database sessions and CRUD operations
+- HTTP Status Codes (200, 201, 204, 404, 409, 422)
+- Interactive API documentation with Swagger UI
 
 ## Project Status
 
-All exercises have been implemented and tested successfully.
+Python fundamentals and core FastAPI exercises have been implemented.
 
-This repository is part of my practical learning journey toward Python backend development and AI Agent development.
+Database integration with SQLAlchemy is currently in progress.
 
-**Next learning goals:** Advanced FastAPI concepts, API integration, LLMs, and AI Agents.
+**Next learning goals:**
+
+- Complete database-backed CRUD operations
+- Advanced FastAPI concepts
+- External API integration
+- LLM fundamentals and API integration
+- AI Agents and tool calling
+- LangGraph and MCP
+

@@ -1,6 +1,9 @@
 from fastapi import APIRouter, HTTPException, status, Depends
+from sqlalchemy import select
+
 from schemas.product import ProductCreate, ProductUpdate, ProductResponse
-from data import products
+from database import get_db
+from models.product import Product
 
 router = APIRouter(
     prefix="/products",
@@ -18,8 +21,9 @@ def get_mock_product_storage():
 
 
 @router.get("/", response_model=list[ProductResponse], status_code=status.HTTP_200_OK)
-async def get_products(storage=Depends(get_product_storage)):
-    return storage
+async def get_products(db=Depends(get_db)):
+    products = db.scalars(select(Product)).all()
+    return products
 
 
 @router.get("/{product_name}", response_model=ProductResponse, status_code=status.HTTP_200_OK)
@@ -34,14 +38,23 @@ async def get_product(product_name: str, storage=Depends(get_product_storage)):
 
 
 @router.post("/", response_model=ProductResponse, status_code=status.HTTP_201_CREATED)
-async def create_product(product: ProductCreate, storage=Depends(get_product_storage)):
-    if any(p["name"] == product.name for p in storage):
+async def create_product(product: ProductCreate, db=Depends(get_db)):
+    existing_product = db.scalar(
+        select(Product).where(Product.name == product.name)
+    )
+
+    if existing_product:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=f"Product '{product.name}' already exists"
         )
-    new_product = product.model_dump()
-    storage.append(new_product)
+
+    new_product = Product(**product.model_dump())
+
+    db.add(new_product)
+    db.commit()
+    db.refresh(new_product)
+
     return new_product
 
 
