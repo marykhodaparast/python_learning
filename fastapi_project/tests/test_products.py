@@ -169,6 +169,42 @@ def test_create_product_with_negative_price():
 
     response = client.post("/products/", json=new_product)
 
-    assert response.status_code == 422    
+    assert response.status_code == 422  
+    
+def test_update_nonexistent_product():
+    response = client.patch(
+        "/products/99999",
+        json={"price": 100}
+    )
+
+    assert response.status_code == 404
+    
+def test_delete_nonexistent_product():
+    response = client.delete("/products/99999")
+
+    assert response.status_code == 404
+    
+def test_change_stock():
+    new_product = {
+        "name": "Cellphone",
+        "price": 300,
+        "stock": 8
+    }  
+    
+    create_response = client.post("/products/", json=new_product)
+    product_id = create_response.json()["id"]
+    
+    update_response = client.patch(
+        f"/products/{product_id}",
+        json={"stock": 25}
+    )     
+    
+    assert update_response.status_code == 200     
+    
+    data = update_response.json()
+    
+    assert data["id"] == product_id
+    assert data["price"] == 300
+    assert data["stock"] == 25     
     
 
