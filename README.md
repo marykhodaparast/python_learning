@@ -24,13 +24,13 @@ cd python_learning
 Install the required dependencies:
 
 ```bash
-python3 -m pip install fastapi uvicorn sqlalchemy pydantic
+python3 -m pip install fastapi uvicorn sqlalchemy pydantic pytest
 ```
 
 Alternatively, use a specific Python interpreter:
 
 ```bash
-/usr/bin/python3 -m pip install fastapi uvicorn sqlalchemy pydantic
+/usr/bin/python3 -m pip install fastapi uvicorn sqlalchemy pydantic pytest
 ```
 
 ## Running the FastAPI Application
@@ -145,7 +145,7 @@ FastAPI should reject invalid input and return a `422 Unprocessable Entity` resp
 Try requesting a product that does not exist:
 
 ```text
-GET /products/UnknownProduct
+GET /products/99999
 ```
 
 The API should return a `404 Not Found` response.
@@ -157,7 +157,7 @@ The project includes SQLAlchemy integration with SQLite.
 - SQLAlchemy is used for database operations.
 - SQLite stores application data locally.
 - Database sessions are managed through a reusable dependency.
-- Product endpoints are being migrated from in-memory storage to database-backed operations.
+- Product CRUD endpoints are now fully integrated with SQLite using SQLAlchemy.
 
 The database file is created automatically when the application starts.
 
@@ -179,21 +179,47 @@ The database file is created automatically when the application starts.
 - SQLAlchemy ORM
 - SQLite database integration
 - Database sessions and CRUD operations
-- HTTP Status Codes (200, 201, 204, 404, 409, 422)
+- HTTP Status Codes (200, 201, 204, 404, 422)
 - Interactive API documentation with Swagger UI
 
 ## Project Status
 
 Python fundamentals and core FastAPI exercises have been implemented.
 
-Database integration with SQLAlchemy is currently in progress.
+Database integration and Product CRUD operations are completed and tested.
 
 **Next learning goals:**
 
-- Complete database-backed CRUD operations
 - Advanced FastAPI concepts
 - External API integration
 - LLM fundamentals and API integration
 - AI Agents and tool calling
 - LangGraph and MCP
+
+### Product CRUD API Testing
+
+Completed comprehensive API testing for the Product CRUD endpoints.
+
+**Tests implemented:**
+- Retrieve all products.
+- Create a product and validate its response.
+- Allow products with duplicate names.
+- Retrieve a product by ID.
+- Handle non-existent products with HTTP 404.
+- Update product fields using PATCH.
+- Preserve unchanged fields during partial updates.
+- Delete products and verify successful deletion.
+- Validate negative prices and reject invalid input with HTTP 422.
+- Verify PATCH and DELETE behavior for non-existent products.
+- Update product stock independently while preserving its price.
+- Reject negative stock values with HTTP 422.
+
+**Testing setup:**
+- Pytest
+- FastAPI TestClient
+- In-memory SQLite database
+- SQLAlchemy StaticPool
+- FastAPI dependency overrides
+
+**Result:** All tests passed successfully.
 
