@@ -1,6 +1,7 @@
 
 from fastapi import APIRouter, HTTPException, status, Depends
 from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from schemas.product import ProductCreate, ProductUpdate, ProductResponse
 from database import get_db
@@ -18,7 +19,7 @@ router = APIRouter(
     response_model=list[ProductResponse],
     status_code=status.HTTP_200_OK
 )
-def get_products(db=Depends(get_db)):
+def get_products(db: Session = Depends(get_db)):
     products = db.scalars(select(Product)).all()
     return products
 
@@ -28,7 +29,7 @@ def get_products(db=Depends(get_db)):
     response_model=ProductResponse,
     status_code=status.HTTP_200_OK
 )
-def get_product(product_id: int, db=Depends(get_db)):
+def get_product(product_id: int, db: Session = Depends(get_db)):
     # Find product using SQLAlchemy
     existing_product = db.scalar(
         select(Product).where(Product.id == product_id)
@@ -49,7 +50,7 @@ def get_product(product_id: int, db=Depends(get_db)):
     response_model=ProductResponse,
     status_code=status.HTTP_201_CREATED
 )
-def create_product(product: ProductCreate, db=Depends(get_db)):
+def create_product(product: ProductCreate, db: Session = Depends(get_db)):
     new_product = Product(**product.model_dump())
 
     db.add(new_product)
@@ -67,7 +68,7 @@ def create_product(product: ProductCreate, db=Depends(get_db)):
 def update_product(
     product_id: int,
     product_update: ProductUpdate,
-    db=Depends(get_db)
+    db: Session = Depends(get_db)
 ):
     product = db.scalar(
         select(Product).where(Product.id == product_id)
@@ -92,7 +93,7 @@ def update_product(
     "/{product_id}",
     status_code=status.HTTP_204_NO_CONTENT
 )
-def delete_product(product_id: int, db=Depends(get_db)):
+def delete_product(product_id: int, db: Session = Depends(get_db)):
     # Find the product
     existing_product = db.scalar(
         select(Product).where(Product.id == product_id)
