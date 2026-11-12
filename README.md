@@ -11,6 +11,9 @@ This repository is part of my practical learning journey toward Python backend d
 - FastAPI
 - Uvicorn
 - SQLAlchemy
+- Pydantic
+- Pytest
+- HTTPX
 
 ## Installation
 
@@ -21,38 +24,47 @@ git clone https://github.com/marykhodaparast/python_learning.git
 cd python_learning
 ```
 
-Install the required dependencies:
-
-```bash
-python3 -m pip install fastapi uvicorn sqlalchemy pydantic pytest
-```
-
-Alternatively, use a specific Python interpreter:
-
-```bash
-/usr/bin/python3 -m pip install fastapi uvicorn sqlalchemy pydantic pytest
-```
-
-## Running the FastAPI Application
-
-The main FastAPI application is located in the `fastapi_project` directory.
-
-First, navigate to the project directory:
+Navigate to the FastAPI project directory:
 
 ```bash
 cd fastapi_project
 ```
 
+Create and activate a virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Install the project dependencies:
+
+```bash
+python -m pip install fastapi uvicorn sqlalchemy pydantic pytest httpx
+```
+
+Using a virtual environment keeps project dependencies isolated from the system Python installation.
+
+## Running the FastAPI Application
+
+The main FastAPI application is located in the `fastapi_project` directory.
+
+If you are not already there, navigate to it:
+
+```bash
+cd fastapi_project
+```
+
+Activate the virtual environment if it is not active:
+
+```bash
+source .venv/bin/activate
+```
+
 Start the development server:
 
 ```bash
-python3 -m uvicorn main:app --reload
-```
-
-Alternatively, use a specific Python interpreter:
-
-```bash
-/usr/bin/python3 -m uvicorn main:app --reload
+python -m uvicorn main:app --reload
 ```
 
 The `--reload` option automatically restarts the server whenever code changes are detected.
@@ -70,13 +82,13 @@ You can also run individual FastAPI exercises using Uvicorn.
 For example, if `tamrin24.py` contains a FastAPI instance named `app`:
 
 ```bash
-python3 -m uvicorn tamrin24:app --reload
+python -m uvicorn tamrin24:app --reload
 ```
 
 General command format:
 
 ```bash
-python3 -m uvicorn filename:app --reload
+python -m uvicorn filename:app --reload
 ```
 
 Replace `filename` with the Python file name without the `.py` extension.
@@ -157,7 +169,7 @@ The project includes SQLAlchemy integration with SQLite.
 - SQLAlchemy is used for database operations.
 - SQLite stores application data locally.
 - Database sessions are managed through a reusable dependency.
-- Product CRUD endpoints are now fully integrated with SQLite using SQLAlchemy.
+- Product CRUD endpoints are fully integrated with SQLite using SQLAlchemy.
 
 The database file is created automatically when the application starts.
 
@@ -179,8 +191,13 @@ The database file is created automatically when the application starts.
 - SQLAlchemy ORM
 - SQLite database integration
 - Database sessions and CRUD operations
+- SQLAlchemy Session type hints
+- Generator type hints for database dependencies
+- Database session lifecycle and cleanup with `yield`, `try/finally`, and `db.close()`
+- Virtual environments with Python `venv`
 - HTTP Status Codes (200, 201, 204, 404, 422)
 - Interactive API documentation with Swagger UI
+- API testing with Pytest and FastAPI TestClient
 
 ## Project Status
 
@@ -188,19 +205,12 @@ Python fundamentals and core FastAPI exercises have been implemented.
 
 Database integration and Product CRUD operations are completed and tested.
 
-**Next learning goals:**
-
-- Advanced FastAPI concepts
-- External API integration
-- LLM fundamentals and API integration
-- AI Agents and tool calling
-- LangGraph and MCP
-
 ### Product CRUD API Testing
 
 Completed comprehensive API testing for the Product CRUD endpoints.
 
 **Tests implemented:**
+
 - Retrieve all products.
 - Create a product and validate its response.
 - Allow products with duplicate names.
@@ -215,11 +225,45 @@ Completed comprehensive API testing for the Product CRUD endpoints.
 - Reject negative stock values with HTTP 422.
 
 **Testing setup:**
+
 - Pytest
 - FastAPI TestClient
 - In-memory SQLite database
 - SQLAlchemy StaticPool
 - FastAPI dependency overrides
 
-**Result:** All tests passed successfully.
+**Latest test result:**
 
+- Python 3.13.1
+- 11 tests passed
+- 1 deprecation warning from the Starlette TestClient / HTTPX integration
+
+All 11 tests passed successfully.
+
+### Advanced FastAPI: Dependency Injection and Database Sessions
+
+Completed the following improvements and learning tasks:
+
+- Added SQLAlchemy `Session` type hints to all Product CRUD endpoints.
+- Added `Generator[Session, None, None]` as the return type hint for the `get_db` dependency.
+- Reviewed how FastAPI provides dependencies through `Depends(get_db)`.
+- Practiced database session lifecycle management using `yield` and `try/finally`.
+- Ensured database sessions are closed with `db.close()` after use.
+- Created and activated a project-specific virtual environment using `venv`.
+- Installed dependencies inside the virtual environment.
+- Verified the test suite using Python 3.13.1.
+
+**Key concept:**
+
+The `Session` type hint describes the expected type of the database object, while `Depends(get_db)` tells FastAPI how to provide that object to an endpoint.
+
+**Status:** Completed.
+
+**Next learning goals:**
+
+- External API integration
+- Further advanced FastAPI concepts
+- LLM fundamentals and API integration
+- AI Agents and tool calling
+- LangGraph and MCP
+- RAG, security, testing, and deployment
