@@ -1,5 +1,6 @@
+from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -13,14 +14,25 @@ router = APIRouter(
     tags=["Products"]
 )
 
+DbSession = Annotated[Session, Depends(get_db)]
 
 @router.get(
     "/",
     response_model=list[ProductResponse],
     status_code=status.HTTP_200_OK
 )
-def get_products(db: Session = Depends(get_db)):
-    products = db.scalars(select(Product)).all()
+def get_products(
+    db: DbSession,
+    skip: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(gt=0, le=100)] = 10
+):
+    products = db.scalars(
+        select(Product)
+        .order_by(Product.id)
+        .offset(skip)
+        .limit(limit)
+    ).all()
+
     return products
 
 
@@ -29,7 +41,7 @@ def get_products(db: Session = Depends(get_db)):
     response_model=ProductResponse,
     status_code=status.HTTP_200_OK
 )
-def get_product(product_id: int, db: Session = Depends(get_db)):
+def get_product(product_id: int, db: DbSession):
     # Find product using SQLAlchemy
     existing_product = db.scalar(
         select(Product).where(Product.id == product_id)
@@ -50,7 +62,7 @@ def get_product(product_id: int, db: Session = Depends(get_db)):
     response_model=ProductResponse,
     status_code=status.HTTP_201_CREATED
 )
-def create_product(product: ProductCreate, db: Session = Depends(get_db)):
+def create_product(product: ProductCreate, db: DbSession):
     new_product = Product(**product.model_dump())
 
     db.add(new_product)
@@ -68,7 +80,7 @@ def create_product(product: ProductCreate, db: Session = Depends(get_db)):
 def update_product(
     product_id: int,
     product_update: ProductUpdate,
-    db: Session = Depends(get_db)
+    db: DbSession
 ):
     product = db.scalar(
         select(Product).where(Product.id == product_id)
@@ -93,7 +105,7 @@ def update_product(
     "/{product_id}",
     status_code=status.HTTP_204_NO_CONTENT
 )
-def delete_product(product_id: int, db: Session = Depends(get_db)):
+def delete_product(product_id: int, db: DbSession):
     # Find the product
     existing_product = db.scalar(
         select(Product).where(Product.id == product_id)

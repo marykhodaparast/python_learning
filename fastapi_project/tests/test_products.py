@@ -205,6 +205,38 @@ def test_change_stock():
     
     assert data["id"] == product_id
     assert data["price"] == 300
-    assert data["stock"] == 25     
+    assert data["stock"] == 25    
     
+def test_get_products_pagination():
+    response = client.get("/products/?skip=0&limit=1")
+
+    assert response.status_code == 200
+    assert len(response.json()) <= 1
+    
+def test_get_products_invalid_skip():
+    response = client.get("/products/?skip=-1&limit=5")
+
+    assert response.status_code == 422     
+    
+def test_get_products_pagination_limit():
+    products = [
+        {"name": "Product A", "price": 100, "stock": 10},
+        {"name": "Product B", "price": 200, "stock": 20},
+        {"name": "Product C", "price": 300, "stock": 30},
+        {"name": "Product D", "price": 400, "stock": 40},
+    ]
+
+    for product in products:
+        client.post("/products/", json=product)
+
+    response = client.get("/products/?skip=0&limit=3")
+
+    assert response.status_code == 200
+
+    result = response.json()
+
+    assert len(result) == 3
+
+    ids = [product["id"] for product in result]
+    assert ids == sorted(ids)
 
