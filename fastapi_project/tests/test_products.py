@@ -1,4 +1,3 @@
-
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -239,4 +238,18 @@ def test_get_products_pagination_limit():
 
     ids = [product["id"] for product in result]
     assert ids == sorted(ids)
+    
+@pytest.mark.parametrize(
+    "query",
+    [
+        "skip=-1",
+        "limit=0",
+        "limit=101",
+    ],
+)
+    
+def test_invalid_pagination_params(query):
+    response = client.get(f"/products/?{query}")
+
+    assert response.status_code == 422    
 
