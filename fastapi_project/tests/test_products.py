@@ -251,5 +251,62 @@ def test_get_products_pagination_limit():
 def test_invalid_pagination_params(query):
     response = client.get(f"/products/?{query}")
 
-    assert response.status_code == 422    
+    assert response.status_code == 422  
+    
+
+@pytest.mark.parametrize(
+    "skip,limit,expected_count",
+    [
+        (0, 1, 1),
+        (0, 10, 6),
+        (0, 100, 6),
+        (5, 10, 1),
+    ],
+)
+def test_get_products_valid_pagination(skip, limit, expected_count):
+    products = [
+        {"name": "Product A", "price": 100, "stock": 10},
+        {"name": "Product B", "price": 200, "stock": 20},
+        {"name": "Product C", "price": 300, "stock": 30},
+        {"name": "Product D", "price": 400, "stock": 40},
+        {"name": "Product E", "price": 500, "stock": 50},
+        {"name": "Product F", "price": 600, "stock": 60},
+    ]
+
+    for product in products:
+        client.post("/products/", json=product)
+
+    response = client.get(
+        f"/products/?skip={skip}&limit={limit}"
+    )
+
+    assert response.status_code == 200
+    assert len(response.json()) == expected_count
+    
+    
+def test_get_products_pagination_order():
+    products = [
+        {"name": "Product A", "price": 100, "stock": 10},
+        {"name": "Product B", "price": 200, "stock": 20},
+        {"name": "Product C", "price": 300, "stock": 30},
+        {"name": "Product D", "price": 400, "stock": 40},
+        {"name": "Product E", "price": 500, "stock": 50},
+        {"name": "Product F", "price": 600, "stock": 60},
+    ]   
+
+    
+    for product in products:
+        client.post("/products/", json=product)
+    
+    response = client.get(
+        f"/products/?skip=2&limit=3"
+    )
+    
+    names = [product["name"] for product in response.json()]
+    
+    assert response.status_code == 200
+    assert names == ["Product C", "Product D", "Product E"]
+    
+     
+      
 
