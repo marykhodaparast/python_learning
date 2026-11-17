@@ -307,6 +307,32 @@ def test_get_products_pagination_order():
     assert response.status_code == 200
     assert names == ["Product C", "Product D", "Product E"]
     
-     
+@pytest.mark.parametrize(
+    "skip",
+    [
+        6,
+        8,
+    ],
+)
+
+def test_get_products_pagination_out_of_range(skip):
+    products = [
+        {"name": "Product A", "price": 100, "stock": 10},
+        {"name": "Product B", "price": 200, "stock": 20},
+        {"name": "Product C", "price": 300, "stock": 30},
+        {"name": "Product D", "price": 400, "stock": 40},
+        {"name": "Product E", "price": 500, "stock": 50},
+        {"name": "Product F", "price": 600, "stock": 60},
+    ]   
+    for product in products:
+            client.post("/products/", json=product)
+        
+    response = client.get(
+        f"/products/?skip={skip}&limit=10"
+    )
+    
+    assert response.status_code == 200
+    assert response.json() == []
+         
       
 
