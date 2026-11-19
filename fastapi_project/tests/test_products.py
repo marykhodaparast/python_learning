@@ -345,6 +345,30 @@ def test_invalid_pagination_non_numeric(query):
     response = client.get(f"/products/?{query}")
 
     assert response.status_code == 422
+    
+def test_get_products_response_structure():
+    product = {
+        "name": "Test Product",
+        "price": 100,
+        "stock": 10,
+    }
+
+    create_response = client.post("/products/", json=product)
+    assert create_response.status_code == 201
+
+    response = client.get("/products/")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert isinstance(data, list)
+    assert len(data) == 1
+    assert isinstance(data[0], dict)
+
+    assert isinstance(data[0]["name"], str)
+    assert isinstance(data[0]["price"], (int, float))
+    assert isinstance(data[0]["stock"], int)   
          
       
 
