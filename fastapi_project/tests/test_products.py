@@ -335,16 +335,18 @@ def test_get_products_pagination_out_of_range(skip):
     assert response.json() == []
     
 @pytest.mark.parametrize(
-    "query",
+    "query, expected_location",
     [
-        "skip=abc",
-        "limit=abc",
+        ("skip=abc", ["query", "skip"]),
+        ("limit=abc", ["query", "limit"]),
     ],
 )
-def test_invalid_pagination_non_numeric(query):
+def test_invalid_pagination_non_numeric(query, expected_location):
     response = client.get(f"/products/?{query}")
 
     assert response.status_code == 422
+    assert response.json()["detail"][0]["loc"] == expected_location
+    # print(response.json())
     
 def test_get_products_response_structure():
     product = {
